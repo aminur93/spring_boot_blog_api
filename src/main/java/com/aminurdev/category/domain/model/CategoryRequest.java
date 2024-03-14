@@ -1,6 +1,6 @@
 package com.aminurdev.category.domain.model;
 
-import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +16,7 @@ public class CategoryRequest {
 
     private Integer id;
 
+    @NotBlank(message = "Name must not be blank")
     @NotNull(message = "Name field is required")
     private String name;
 
@@ -23,6 +24,5 @@ public class CategoryRequest {
     private MultipartFile image;
 
     @NotNull(message = "Status field is required")
-    @AssertTrue(message = "Status field must be true or false")
     private boolean status;
 }

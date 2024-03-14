@@ -3,9 +3,15 @@ package com.aminurdev.category.service.impl;
 import com.aminurdev.category.domain.entity.Category;
 import com.aminurdev.category.domain.model.CategoryRequest;
 import com.aminurdev.category.domain.repositories.CategoryRepository;
+import com.aminurdev.category.response.pagination.Links;
+import com.aminurdev.category.response.pagination.Meta;
+import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.CategoryService;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,8 +33,52 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String RESOURCE_DIRECTORY = "./src/main/resources/uploads/category_images/";
 
     @Override
-    public List<Category> index() {
-        return categoryRepository.findAll();
+    public PaginatedResponse<Category> index(Sort.Direction direction, int page, int perPage) {
+
+        Pageable pageable = PageRequest.of(page - 1, perPage, Sort.by(direction, "updatedAt"));
+        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+
+        List<Category> categories = categoryPage.getContent();
+
+        PaginatedResponse<Category> response = new PaginatedResponse<>();
+        response.setData(categories);
+        response.setMessage("All Categories");
+
+        Meta meta = new Meta();
+
+        meta.setCurrentPage(categoryPage.getNumber() + 1);
+        meta.setFrom(categoryPage.getNumber() * categoryPage.getSize() + 1);
+        meta.setLastPage(categoryPage.getTotalPages());
+        meta.setPath("/categories");
+        meta.setPerPage(categoryPage.getSize());
+        meta.setTo((int) categoryPage.getTotalElements());
+        meta.setTotal((int) categoryPage.getTotalElements());
+        response.setMeta(meta);
+
+        Links links = new Links();
+
+        links.setFirst("/categories?page=1");
+        links.setLast("/categories?page=" + categoryPage.getTotalPages());
+        if (categoryPage.hasPrevious()) {
+            links.setPrev("/categories?page=" + categoryPage.previousPageable().getPageNumber());
+        }
+        if (categoryPage.hasNext()) {
+            links.setNext("/categories?page=" + categoryPage.nextPageable().getPageNumber());
+        }
+        response.setLinks(links);
+
+        return response;
+    }
+
+    @Override
+    public List<Category> allCategory() {
+
+        return categoryRepository.findAll(Sort.by(Sort.Order.desc("id")));
+    }
+
+    @Override
+    public int getTotalCategories() {
+        return (int) categoryRepository.count();
     }
 
     @Override
