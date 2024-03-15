@@ -2,8 +2,6 @@ package com.aminurdev.category.controllers.rest;
 
 import com.aminurdev.category.domain.entity.Category;
 import com.aminurdev.category.domain.model.CategoryRequest;
-import com.aminurdev.category.response.pagination.Links;
-import com.aminurdev.category.response.pagination.Meta;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.CategoryService;
 import jakarta.validation.Valid;
@@ -50,5 +48,29 @@ public class CategoryController {
         Category category = categoryService.store(categoryRequest);
 
         return new  ResponseEntity<>(category, HttpStatus.CREATED);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Category> edit(@PathVariable("id") Integer categoryId)
+    {
+        Category category = categoryService.edit(categoryId);
+
+        return ResponseEntity.ok(category);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Category> update(@PathVariable("id") @ModelAttribute Integer categoryId, CategoryRequest categoryRequest)
+    {
+        Category category = categoryService.update(categoryId, categoryRequest);
+
+        return new ResponseEntity<>(category, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Integer categoryId)
+    {
+        categoryService.delete(categoryId);
+
+        return ResponseEntity.ok("Category delete successful");
     }
 }

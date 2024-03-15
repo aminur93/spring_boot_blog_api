@@ -1,6 +1,7 @@
 package com.aminurdev.category.service.impl;
 
 import com.aminurdev.category.domain.entity.Category;
+import com.aminurdev.category.domain.excepation.ResourceNotFoundExcepation;
 import com.aminurdev.category.domain.model.CategoryRequest;
 import com.aminurdev.category.domain.repositories.CategoryRepository;
 import com.aminurdev.category.response.pagination.Links;
@@ -8,6 +9,7 @@ import com.aminurdev.category.response.pagination.Meta;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.CategoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -97,7 +101,67 @@ public class CategoryServiceImpl implements CategoryService {
         return category;
     }
 
+    @Override
+    public Category edit(Integer categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundExcepation("Category id is not found"));
+
+        return category;
+    }
+
+    @Override
+    public Category update(Integer categoryId, CategoryRequest categoryRequest) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundExcepation("Category id is not found"));
+
+        if (categoryRequest.getImage() != null) {
+            // Delete old image from folder
+            deleteImageFile(category.getImage());
+
+            // Save new image and update image name in the database
+            String newImageName = null;
+            try {
+                newImageName = saveImageFile(categoryRequest.getImage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            category.setImage(newImageName);
+
+        }else {
+            category.setName(category.getImage());
+        }
+
+        category.setName(categoryRequest.getName());
+        category.setStatus(categoryRequest.isStatus());
+
+        category = categoryRepository.save(category);
+
+        return category;
+    }
+
+    @Override
+    public void delete(Integer categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundExcepation("Category id is not found"));
+
+        if (category.getImage() != null)
+        {
+            deleteImageFile(category.getImage());
+
+            categoryRepository.deleteById(categoryId);
+
+        } else {
+
+            categoryRepository.deleteById(categoryId);
+        }
+
+    }
+
     private String saveImageFile(MultipartFile image) throws IOException {
+
         String imageName = generateUniqueImageName(Objects.requireNonNull(image.getOriginalFilename()));
         byte[] imageData = image.getBytes();
         String filePath = RESOURCE_DIRECTORY + imageName;
@@ -111,18 +175,25 @@ public class CategoryServiceImpl implements CategoryService {
         return UUID.randomUUID().toString() + extension;
     }
 
-    @Override
-    public Category edit(Integer categoryId) {
-        return null;
-    }
+    private void deleteImageFile(String imageName) {
 
-    @Override
-    public Category update(Integer categoryId, CategoryRequest categoryRequest) {
-        return null;
-    }
+        if (imageName != null)
+        {
+            String imagePath = RESOURCE_DIRECTORY + File.separator + imageName;
 
-    @Override
-    public void delete(Integer categoryId) {
+            // Create a File object representing the image file
+            File imageFile = new File(imagePath);
 
+            // Check if the file exists and delete it if it does
+            if (imageFile.exists()) {
+                if (imageFile.delete()) {
+                    System.out.println("Deleted image file: " + imageName);
+                } else {
+                    System.err.println("Failed to delete image file: " + imageName);
+                }
+            } else {
+                System.err.println("Image file not found: " + imageName);
+            }
+        }
     }
 }
