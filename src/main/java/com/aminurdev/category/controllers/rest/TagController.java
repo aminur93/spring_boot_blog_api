@@ -183,7 +183,6 @@ public class TagController {
             ResponseWrapper responseWrapper = ResponseWrapper.createSuccessResponse(null, "delete Successful","success", HttpStatus.OK.value());
 
             return ResponseEntity.status(HttpStatus.OK).body(responseWrapper);
-:
         }catch (ResourceNotFoundExcepation e){
 
             Map<String, Object> responseData = new HashMap<>();
