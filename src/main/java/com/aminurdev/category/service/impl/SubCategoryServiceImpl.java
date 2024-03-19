@@ -66,10 +66,10 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         links.setFirst("/sub-categories?page=1");
         links.setLast("/sub-categories?page=" + subCategoryPage.getTotalPages());
         if (subCategoryPage.hasPrevious()) {
-            links.setPrev("//sub-categories?page=" + subCategoryPage.previousPageable().getPageNumber());
+            links.setPrev("/sub-categories?page=" + subCategoryPage.previousPageable().getPageNumber());
         }
         if (subCategoryPage.hasNext()) {
-            links.setNext("//sub-categories?page=" + subCategoryPage.nextPageable().getPageNumber());
+            links.setNext("/sub-categories?page=" + subCategoryPage.nextPageable().getPageNumber());
         }
 
         response.setLinks(links);
