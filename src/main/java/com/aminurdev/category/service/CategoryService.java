@@ -1,13 +1,13 @@
 package com.aminurdev.category.service;
 
 import com.aminurdev.category.domain.entity.Category;
+import com.aminurdev.category.domain.entity.SubCategory;
 import com.aminurdev.category.domain.model.CategoryRequest;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface CategoryService {
 
@@ -19,7 +19,7 @@ public interface CategoryService {
 
     Category store(CategoryRequest categoryRequest) throws IOException;
 
-   Category edit(Integer categoryId);
+    Category edit(Integer categoryId);
 
     Category update(Integer categoryId, CategoryRequest categoryRequest);
 

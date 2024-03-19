@@ -1,6 +1,7 @@
 package com.aminurdev.category.controllers.rest;
 
 import com.aminurdev.category.domain.entity.Category;
+import com.aminurdev.category.domain.entity.SubCategory;
 import com.aminurdev.category.domain.model.CategoryRequest;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.CategoryService;

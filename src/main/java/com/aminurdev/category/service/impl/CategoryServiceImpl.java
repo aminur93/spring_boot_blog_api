@@ -1,6 +1,7 @@
 package com.aminurdev.category.service.impl;
 
 import com.aminurdev.category.domain.entity.Category;
+import com.aminurdev.category.domain.entity.SubCategory;
 import com.aminurdev.category.domain.excepation.ResourceNotFoundExcepation;
 import com.aminurdev.category.domain.model.CategoryRequest;
 import com.aminurdev.category.domain.repositories.CategoryRepository;
@@ -9,7 +10,6 @@ import com.aminurdev.category.response.pagination.Meta;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.CategoryService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.List;
+import java.util.*;
 
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -40,6 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     public PaginatedResponse<Category> index(Sort.Direction direction, int page, int perPage) {
 
         Pageable pageable = PageRequest.of(page - 1, perPage, Sort.by(direction, "updatedAt"));
+
         Page<Category> categoryPage = categoryRepository.findAll(pageable);
 
         List<Category> categories = categoryPage.getContent();
@@ -77,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> allCategory() {
 
-        return categoryRepository.findAll(Sort.by(Sort.Order.desc("id")));
+        return categoryRepository.findAll();
     }
 
     @Override

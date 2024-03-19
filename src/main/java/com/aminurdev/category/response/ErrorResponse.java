@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -13,11 +14,11 @@ import java.util.Map;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    private Map<String, String> errors;
+    private Map<String, Object> errors;
     private String message;
-    private String status;
+    private Integer status;
 
-    public ErrorResponse(Map<String, String> errors) {
+    public ErrorResponse(Map<String, Object> errors) {
         this.errors = errors;
     }
 }

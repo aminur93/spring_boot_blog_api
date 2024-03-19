@@ -1,6 +1,8 @@
 package com.aminurdev.category.controllers.advice;
 
 import com.aminurdev.category.response.ErrorResponse;
+import jakarta.validation.ValidationException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +20,7 @@ public class ApplicationExcepationHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException exception)
     {
-        Map<String, String> errors = new  HashMap<>();
+        Map<String, Object> errors = new  HashMap<>();
 
         exception.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
@@ -28,7 +30,7 @@ public class ApplicationExcepationHandler {
 
         errorResponse.setErrors(errors);
         errorResponse.setMessage("Validation error");
-        errorResponse.setStatus(String.valueOf(HttpStatus.BAD_REQUEST));
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
         return ResponseEntity.badRequest().body(errorResponse);
     }

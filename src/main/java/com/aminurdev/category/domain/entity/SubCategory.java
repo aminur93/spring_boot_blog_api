@@ -1,6 +1,6 @@
 package com.aminurdev.category.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,15 +10,14 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "subcategories")
+public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +26,11 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "image", nullable = true)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "status")
-    private boolean status;
+    private Integer status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -52,7 +51,8 @@ public class Category {
         updatedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "category")
-    @JsonManagedReference
-    private Set<SubCategory> subcategories;
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    private Category category;
 }
