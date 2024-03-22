@@ -1,5 +1,7 @@
 package com.aminurdev.category.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +10,8 @@ import lombok.Setter;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -57,4 +61,8 @@ public class Tag {
         // Handle the case when name is empty or null
         return ""; // or throw an exception, depending on your requirements
     }
+
+    @ManyToMany(mappedBy = "tags")
+    @JsonBackReference
+    private Set<Blog> blog = new HashSet<>();
 }

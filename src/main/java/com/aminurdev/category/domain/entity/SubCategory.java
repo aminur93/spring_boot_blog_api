@@ -9,7 +9,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -55,4 +57,9 @@ public class SubCategory {
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     @JsonBackReference
     private Category category;
+
+    @ManyToMany(mappedBy = "subCategories")
+    @JsonBackReference
+    private Set<Blog> blog = new HashSet<>();
+
 }
