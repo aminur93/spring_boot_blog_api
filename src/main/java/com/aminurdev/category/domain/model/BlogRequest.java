@@ -38,6 +38,7 @@ public class BlogRequest {
 
     private String slug;
 
+    @Lob
     @NotNull(message = "Description field is required")
     private String description;
 
