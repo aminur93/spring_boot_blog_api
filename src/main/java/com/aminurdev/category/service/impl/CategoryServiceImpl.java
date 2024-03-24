@@ -73,6 +73,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> getAllCategoriesWithBlogs(Integer categoryId) {
+         return categoryRepository.findAllWithBlogs(categoryId);
+    }
+
+
+    @Override
     public List<Category> allCategory() {
 
         return categoryRepository.findAll();

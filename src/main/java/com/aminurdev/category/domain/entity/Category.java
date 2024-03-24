@@ -1,6 +1,8 @@
 package com.aminurdev.category.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -58,7 +60,8 @@ public class Category {
     private Set<SubCategory> subcategories;
 
     @OneToMany(mappedBy = "category")
-    @JsonBackReference
+    @JsonManagedReference
+    @JsonIgnoreProperties({"category", "subcategories"})
     private Set<Blog> blogs;
 
 }

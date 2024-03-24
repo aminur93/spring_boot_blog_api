@@ -3,6 +3,7 @@ package com.aminurdev.category.controllers.rest;
 import com.aminurdev.category.domain.entity.Category;
 import com.aminurdev.category.domain.entity.SubCategory;
 import com.aminurdev.category.domain.model.CategoryRequest;
+import com.aminurdev.category.response.SuccessResponse;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.CategoryService;
 import jakarta.validation.Valid;
@@ -13,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -33,6 +36,24 @@ public class CategoryController {
         PaginatedResponse<Category> paginatedResponse = categoryService.index(direction, page, perPage);
 
         return ResponseEntity.ok(paginatedResponse);
+    }
+
+    @GetMapping("/blogs/{id}")
+    public ResponseEntity<SuccessResponse> getCategoryBlogs(@PathVariable("id") Integer categoryId)
+    {
+        List<Category> categories = categoryService.getAllCategoriesWithBlogs(categoryId);
+
+        Map<String, Object> responseData = new HashMap<>();
+
+        responseData.put("category", categories);
+
+        SuccessResponse successResponse = new SuccessResponse(responseData);
+
+        successResponse.setMessage("Successfully fetch category blogs");
+        successResponse.setStatus("Success");
+        successResponse.setCode(HttpStatus.OK.value());
+
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
     @GetMapping("/all-categories")

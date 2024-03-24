@@ -31,8 +31,7 @@ public class Blog {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonInclude
-    @JsonIgnoreProperties("subcategories")
+    @JsonIgnoreProperties({"subcategories", "blogs"})
     private Category category;
 
     @Column(name = "title")

@@ -13,6 +13,8 @@ public interface CategoryService {
 
     PaginatedResponse<Category> index(Sort.Direction direction, int page, int perPage);
 
+    List<Category> getAllCategoriesWithBlogs(Integer categoryId);
+
     List<Category> allCategory();
 
     int getTotalCategories();
