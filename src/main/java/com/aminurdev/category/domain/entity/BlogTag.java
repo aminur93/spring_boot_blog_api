@@ -1,5 +1,6 @@
 package com.aminurdev.category.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

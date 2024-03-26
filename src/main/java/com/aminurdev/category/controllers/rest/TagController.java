@@ -1,5 +1,6 @@
 package com.aminurdev.category.controllers.rest;
 
+import com.aminurdev.category.domain.entity.Blog;
 import com.aminurdev.category.domain.entity.Tag;
 import com.aminurdev.category.domain.excepation.ResourceNotFoundExcepation;
 import com.aminurdev.category.domain.model.TagRequest;
@@ -8,16 +9,13 @@ import com.aminurdev.category.response.SuccessResponse;
 import com.aminurdev.category.response.pagination.PaginatedResponse;
 import com.aminurdev.category.service.TagService;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/tag")
@@ -52,6 +50,46 @@ public class TagController {
         SuccessResponse successResponse = new SuccessResponse(responseData);
 
         successResponse.setMessage("Successfully fetch tags");
+        successResponse.setStatus("Success");
+        successResponse.setCode(HttpStatus.OK.value());
+
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+    }
+
+    @GetMapping("/blogs/{id}")
+    public ResponseEntity<SuccessResponse> getTagWithBlogs(@PathVariable("id") Integer tagId)
+    {
+        Tag tag = tagService.getTagWiseBlogs(tagId);
+
+        Map<String, Object> responseData = new LinkedHashMap<>();
+
+        List<Map<String, Object>> blogsList = new ArrayList<>();
+
+        for (Blog blog : tag.getBlog()) {
+            Map<String, Object> blogDetails = new LinkedHashMap<>();
+
+            blogDetails.put("id", blog.getId());
+            blogDetails.put("title", blog.getTitle());
+            blogDetails.put("slogan", blog.getSlogan());
+            blogDetails.put("slug", blog.getSlug());
+            blogDetails.put("description", blog.getDescription());
+            blogDetails.put("image", blog.getImage());
+            blogDetails.put("date", blog.getDate());
+            blogDetails.put("created_at", blog.getCreatedAt());
+            blogDetails.put("updated_at", blog.getUpdatedAt());
+
+            blogsList.add(blogDetails);
+        }
+
+        responseData.put("id", tag.getId());
+        responseData.put("name", tag.getName());
+        responseData.put("slug", tag.getSlug());
+        responseData.put("status", tag.getStatus());
+        responseData.put("blog", blogsList);
+
+        SuccessResponse successResponse = new SuccessResponse(responseData);
+
+        successResponse.setMessage("Successfully fetch category blogs");
         successResponse.setStatus("Success");
         successResponse.setCode(HttpStatus.OK.value());
 

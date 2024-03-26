@@ -1,5 +1,6 @@
 package com.aminurdev.category.service.impl;
 
+import com.aminurdev.category.domain.entity.Blog;
 import com.aminurdev.category.domain.entity.Tag;
 import com.aminurdev.category.domain.excepation.ResourceNotFoundExcepation;
 import com.aminurdev.category.domain.model.TagRequest;
@@ -15,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -69,6 +70,12 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = tagRepository.findAll();
 
         return tags;
+    }
+
+    @Override
+    public Tag getTagWiseBlogs(Integer tagId) {
+
+        return tagRepository.findTagByBlog(tagId);
     }
 
     @Override
