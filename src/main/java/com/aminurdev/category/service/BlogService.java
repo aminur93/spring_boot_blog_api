@@ -19,6 +19,8 @@ public interface BlogService {
 
     Blog edit(Integer blogId);
 
+    Blog details(Integer blogId);
+
     Blog update(Integer blogId, BlogRequest blogRequest);
 
     void delete(Integer blogId);

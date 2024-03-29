@@ -104,6 +104,42 @@ public class BlogController {
         }
     }
 
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ResponseWrapper> details(@PathVariable("id") Integer blogId)
+    {
+        try{
+
+            Blog blog = blogService.edit(blogId);
+
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("blog", blog);
+
+            ResponseWrapper successResponse = ResponseWrapper.createSuccessResponse(responseData, "fetch successful", "Success", HttpStatus.OK.value());
+
+            return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+
+        }catch (ResourceNotFoundExcepation e){
+
+            Map<String, Object> responseData = new HashMap<>();
+
+            responseData.put("error", e.getMessage());
+
+            ResponseWrapper errorResponse = ResponseWrapper.error(responseData, "failed", "error", 400);
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+        }catch (Exception e){
+
+            Map<String, Object> responseData = new HashMap<>();
+
+            responseData.put("error", e.getMessage());
+
+            ResponseWrapper errorResponse = ResponseWrapper.error(responseData, "failed", "error", 500);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<ResponseWrapper> update(@PathVariable("id")  @Valid @ModelAttribute Integer blogId, BlogRequest blogRequest)
     {

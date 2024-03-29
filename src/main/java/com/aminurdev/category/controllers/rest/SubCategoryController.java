@@ -1,6 +1,7 @@
 package com.aminurdev.category.controllers.rest;
 
 import com.aminurdev.category.controllers.advice.ApplicationExcepationHandler;
+import com.aminurdev.category.domain.entity.Blog;
 import com.aminurdev.category.domain.entity.SubCategory;
 import com.aminurdev.category.domain.excepation.ResourceNotFoundExcepation;
 import com.aminurdev.category.domain.model.SubCategoryRequest;
@@ -20,9 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/sub-category")
@@ -43,6 +42,67 @@ public class SubCategoryController {
         PaginatedResponse<SubCategory> paginatedResponse = subCategoryService.index(direction, page, perPage);
 
         return ResponseEntity.ok(paginatedResponse);
+    }
+
+    @GetMapping("/blogs/{id}")
+    public ResponseEntity<ResponseWrapper> getSubCategoryWiseBlog(@PathVariable("id") Integer subCategoryId)
+    {
+        try{
+            SubCategory subCategory = subCategoryService.getSubCategoryWiseBlog(subCategoryId);
+
+            Map<String, Object> responseData = new LinkedHashMap<>();
+
+            List<Map<String, Object>> blogData = new ArrayList<>();
+
+            for (Blog blog: subCategory.getBlog())
+            {
+                Map<String, Object> blogResponse = new LinkedHashMap<>();
+
+                blogResponse.put("id", blog.getId());
+                blogResponse.put("title", blog.getTitle());
+                blogResponse.put("slogan", blog.getSlogan());
+                blogResponse.put("slug", blog.getSlug());
+                blogResponse.put("description", blog.getDescription());
+                blogResponse.put("image", blog.getImage());
+                blogResponse.put("date", blog.getDate());
+                blogResponse.put("created_at", blog.getCreatedAt());
+                blogResponse.put("updated_at", blog.getUpdatedAt());
+
+                blogData.add(blogResponse);
+
+            }
+
+            responseData.put("id", subCategory.getId());
+            responseData.put("name", subCategory.getName());
+            responseData.put("image", subCategory.getImage());
+            responseData.put("status", subCategory.getStatus());
+            responseData.put("blog", blogData);
+
+            ResponseWrapper successResponse = ResponseWrapper.createSuccessResponse(responseData, "fetch successful", "Success", HttpStatus.OK.value());
+
+            return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+
+        }catch (ResourceNotFoundExcepation e){
+
+            Map<String, Object> responseData = new HashMap<>();
+
+            responseData.put("error", e.getMessage());
+
+            ResponseWrapper errorResponse = ResponseWrapper.error(responseData, "failed", "error", 400);
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+        }catch (Exception e){
+
+            Map<String, Object> responseData = new HashMap<>();
+
+            responseData.put("error", e.getMessage());
+
+            ResponseWrapper errorResponse = ResponseWrapper.error(responseData, "failed", "error", 500);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
     }
 
     @GetMapping("/all-sub-categories")

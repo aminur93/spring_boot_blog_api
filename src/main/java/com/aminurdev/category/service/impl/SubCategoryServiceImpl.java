@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,6 +82,13 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     public List<SubCategory> allSubCategories() {
 
         return subCategoryRepository.findAll(Sort.by(Sort.Order.desc("id")));
+    }
+
+    @Override
+    public SubCategory getSubCategoryWiseBlog(@Param("subCategoryId") Integer subCategoryId) {
+        SubCategory subCategory = subCategoryRepository.findSubCategoryByBlog(subCategoryId)
+                            .orElseThrow(() -> new ResourceNotFoundExcepation("Sub category id not found"));
+        return subCategory;
     }
 
     @Override

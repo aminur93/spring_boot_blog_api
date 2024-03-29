@@ -13,6 +13,8 @@ public interface SubCategoryService {
 
     List<SubCategory> allSubCategories();
 
+    SubCategory getSubCategoryWiseBlog(Integer subCategoryId);
+
     int getAllSubCategories();
 
     SubCategory store(SubCategoryRequest subCategoryRequest);

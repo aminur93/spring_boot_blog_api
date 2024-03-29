@@ -166,6 +166,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public Blog details(Integer blogId) {
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new ResourceNotFoundExcepation("Blog id is not found"));
+
+        return blog;
+    }
+
+    @Override
     @Transactional
     public Blog update(Integer blogId, BlogRequest blogRequest) {
 
